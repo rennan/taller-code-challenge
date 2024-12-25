@@ -1,0 +1,38 @@
+.taller-navbar {
+  background-color: #080808;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15),inset 0 -1px 0 rgba(255,255,255,0.15);
+  padding: 24px 0;
+}
+
+.navbar-brand {
+  transition: .2s ease-in-out transform;
+  display: flex;
+  gap: 8px;
+
+  &:hover,
+  &:focus {
+    transform: rotate(-2deg) scale(1.1);
+  }
+
+  svg {
+    height: 22px;
+  }
+}
+
+.search-form {
+  margin: 24px 0;
+}
+
+.card-container {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+}
+
+.card {
+  transition: .2s ease-in-out box-shadow;
+
+  &:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15),inset 0 -1px 0 rgba(255,255,255,0.15);
+  }
+}

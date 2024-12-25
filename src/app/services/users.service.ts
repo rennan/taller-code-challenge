@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { IUser } from '../interfaces/users.interface';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class UsersService {
   constructor(private readonly http: HttpClient) {}

@@ -1,35 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { IUser } from '../../interfaces/users.interface';
-import { UsersService } from '../../services/users.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { UsersService } from './../../services/users.service';
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { IUser } from '../../interfaces/users.interface';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-users',
+  selector: 'users-list',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './users.component.html',
-  styleUrl: './users.component.scss',
+  templateUrl: './users-list.component.html',
+  styleUrl: './users-list.component.scss',
 })
-export class UsersComponent implements OnInit {
-  private users: IUser[] = [];
-
+export class UsersListComponent implements OnInit, OnDestroy {
+  users: IUser[] = [];
   filteredUsers: IUser[] = [];
-
   searchForm: FormGroup = new FormGroup({
     search: new FormControl(null),
   });
 
+  private readonly destroy$ = new Subject<void>();
 
   constructor(private readonly usersService: UsersService) {}
 
   ngOnInit(): void {
-    this.getUsers();
+    this.fetchUsersFromApi();
     this.monitorySearchControl();
   }
 
-  private getUsers(): void {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private fetchUsersFromApi(): void {
     this.usersService.getUsers().subscribe((users) => {
       this.users = users;
       this.filteredUsers = users;
@@ -44,11 +49,10 @@ export class UsersComponent implements OnInit {
   }
 
   private monitorySearchControl(): void {
-    this.searchForm
-      .get('search')
-      ?.valueChanges.pipe(debounceTime(300), distinctUntilChanged())
+    this.searchForm.get('search')?.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((search) => {
-        this.filterUsers(search ?? '');
+        this.filterUsers(search as string);
       });
   }
 }
